@@ -22,6 +22,7 @@ vocab_transform = {}
 # pip install -U spacy
 # python -m spacy download en_core_web_sm
 # python -m spacy download de_core_news_sm
+# tokenization -> 토큰화 함수 새로 필요함
 token_transform[SRC_LANGUAGE] = get_tokenizer('spacy', language='de_core_news_sm')
 token_transform[TGT_LANGUAGE] = get_tokenizer('spacy', language='en_core_web_sm')
 
@@ -38,10 +39,17 @@ UNK_IDX, PAD_IDX, BOS_IDX, EOS_IDX = 0, 1, 2, 3
 # Make sure the tokens are in order of their indices to properly insert them in vocab
 special_symbols = ['<unk>', '<pad>', '<bos>', '<eos>']
 
+train_iter = Multi30k(split='train', language_pair=(SRC_LANGUAGE, TGT_LANGUAGE))
+for item in yield_tokens(train_iter, SRC_LANGUAGE):
+    print(item)
+    print()
+
 for ln in [SRC_LANGUAGE, TGT_LANGUAGE]:
     # Training data Iterator
     train_iter = Multi30k(split='train', language_pair=(SRC_LANGUAGE, TGT_LANGUAGE))
+
     # Create torchtext's Vocab object
+    # yield_tokens로 형성된 generator는 ['Zwei', 'Mädchen', 'mit', 'langen', 'Haaren', 'stehen', 'vor', 'einem', 'überfüllten', 'Tisch', '.', '\n'] 포함
     vocab_transform[ln] = build_vocab_from_iterator(yield_tokens(train_iter, ln),
                                                     min_freq=1,
                                                     specials=special_symbols,
