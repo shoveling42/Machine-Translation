@@ -25,12 +25,15 @@ vocab_transform = {}
 token_transform[SRC_LANGUAGE] = get_tokenizer('spacy', language='de_core_news_sm')
 token_transform[TGT_LANGUAGE] = get_tokenizer('spacy', language='en_core_web_sm')
 
-
 # helper function to yield list of tokens
 def yield_tokens(data_iter: Iterable, language: str) -> List[str]:
     language_index = {SRC_LANGUAGE: 0, TGT_LANGUAGE: 1}
 
+    print(data_iter)
+    # data_sample 예시: ('Ein Mann baut einen Holzstuhl zusammen.\n', 'A man putting together a wooden chair.\n')
     for data_sample in data_iter:
+        
+        # 예시: ['Zwei', 'Mädchen', 'mit', 'langen', 'Haaren', 'stehen', 'vor', 'einem', 'überfüllten', 'Tisch', '.', '\n']
         yield token_transform[language](data_sample[language_index[language]])
 
 # Define special symbols and indices
@@ -38,22 +41,16 @@ UNK_IDX, PAD_IDX, BOS_IDX, EOS_IDX = 0, 1, 2, 3
 # Make sure the tokens are in order of their indices to properly insert them in vocab
 special_symbols = ['<unk>', '<pad>', '<bos>', '<eos>']
 
-train_iter = Multi30k(split='train', language_pair=(SRC_LANGUAGE, TGT_LANGUAGE))
-for item in yield_tokens(train_iter, SRC_LANGUAGE):
-    print(item)
-    print()
-
 for ln in [SRC_LANGUAGE, TGT_LANGUAGE]:
     # Training data Iterator
     train_iter = Multi30k(split='train', language_pair=(SRC_LANGUAGE, TGT_LANGUAGE))
 
     # Create torchtext's Vocab object
-    # yield_tokens로 형성된 generator는 ['Zwei', 'Mädchen', 'mit', 'langen', 'Haaren', 'stehen', 'vor', 'einem', 'überfüllten', 'Tisch', '.', '\n'] 포함
     vocab_transform[ln] = build_vocab_from_iterator(yield_tokens(train_iter, ln),
                                                     min_freq=1,
                                                     specials=special_symbols,
                                                     special_first=True)
-
+    
 # Set UNK_IDX as the default index. This index is returned when the token is not found.
 # If not set, it throws RuntimeError when the queried token is not found in the Vocabulary.
 for ln in [SRC_LANGUAGE, TGT_LANGUAGE]:
