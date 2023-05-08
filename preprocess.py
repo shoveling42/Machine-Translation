@@ -11,7 +11,7 @@ def extract_en(file_path: str, type: str, num: int):
 def extract_ko(file_path: str, type: str, num: int):
     with open(file_path, 'r', encoding='utf-8') as file:
         sents = json.load(file)
-        raw_file = r'.\json2txt\raw_data\korean_{}_{}.en'.format(type, num)
+        raw_file = r'.\json2txt\raw_data\korean_{}_{}.ko'.format(type, num)
         with open(raw_file, 'w', encoding='utf-8') as f:
             for sent in sents["data"]:
                 f.write(sent["ko"] + '\n')
