@@ -5,3 +5,6 @@ machine translation between Korean and English with various tokenizers
 
 ## Prerequisites
 dataset:
+
+## References
+https://pytorch.org/tutorials/beginner/translation_transformer.html
