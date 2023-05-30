@@ -1,5 +1,5 @@
 # Machine_Translation
-Kiwi tokenizer를 통한 영한 기계번역 소스코드입니다.
+자연어처리 Final Project 11조 이준석의 Kiwi tokenizer를 통한 영한 기계번역 소스코드입니다.
 
 데이터셋은 하단의 사이트에서 다운 받으시길 바랍니다.
 
